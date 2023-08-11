@@ -12,6 +12,9 @@ use Squarebit\Workflows\Models\WorkflowTransition;
 
 class TransitionService
 {
+    /**
+     * @return Collection<int, WorkflowTransition>
+     */
     public static function availableTransitions(WorkflowModelStatus $modelStatus, Authenticatable $user = null): Collection
     {
         return WorkflowTransition::query()
@@ -26,7 +29,7 @@ class TransitionService
         $user = $user ?? Auth::user();
 
         if ($user === null) {
-            return config('workflow.allow_guests_to_transition');
+            return (bool) config('workflow.allow_guests_to_transition');
         }
 
         $requiredPermissions = $transition->getAllPermissions();

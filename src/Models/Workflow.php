@@ -20,16 +20,25 @@ class Workflow extends Model
 
     protected $table = 'workflows';
 
+    /**
+     * @return HasMany<WorkflowTransition>
+     */
     public function transitions(): HasMany
     {
         return $this->hasMany(WorkflowTransition::class);
     }
 
+    /**
+     * @return HasMany<WorkflowTransition>
+     */
     public function entryTransitions(): HasMany
     {
         return $this->transitions()->entry();
     }
 
+    /**
+     * @return HasMany<WorkflowTransition>
+     */
     public function exitTransitions(): HasMany
     {
         return $this->transitions()->exit();

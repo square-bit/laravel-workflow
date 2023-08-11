@@ -6,22 +6,20 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Squarebit\Workflows\Models\WorkflowTransition;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Squarebit\Workflows\Models\WorkflowTransition>
+ * @extends Factory<WorkflowTransition>
  */
 class WorkflowTransitionFactory extends Factory
 {
     protected $model = WorkflowTransition::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
+            /** @phpstan-ignore-next-line */
             'workflow_id' => WorkflowFactory::new()->create()->id,
+            /** @phpstan-ignore-next-line */
             'from_id' => WorkflowStatusFactory::new()->create()->id,
+            /** @phpstan-ignore-next-line */
             'to_id' => WorkflowStatusFactory::new()->create()->id,
             'order' => random_int(1, 999),
         ];

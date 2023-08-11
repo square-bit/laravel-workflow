@@ -9,6 +9,7 @@ use Squarebit\Workflows\Models\Workflow;
 
 /**
  * @template T of Model
+ *
  * @property int $workflow_id
  * @property \Squarebit\Workflows\Models\Workflow $workflow
  *
@@ -25,7 +26,7 @@ trait BelongsToWorkflow
     }
 
     /**
-     * @param Builder<T> $query
+     * @param  Builder<T>  $query
      * @return Builder<T>
      */
     public function scopeForWorkflow(Builder $query, int|Workflow $workflow): Builder

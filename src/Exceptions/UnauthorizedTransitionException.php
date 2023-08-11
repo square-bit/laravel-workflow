@@ -7,7 +7,7 @@ use Throwable;
 
 class UnauthorizedTransitionException extends Exception
 {
-    public function __construct(?string $message = null, ?Throwable $previous = null)
+    public function __construct(string $message = null, Throwable $previous = null)
     {
         parent::__construct($message ?? __('Unauthorized transition'), 403, $previous);
     }

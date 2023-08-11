@@ -1,24 +1,25 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "square-bit/laravel-workflow",
+    "description": "Add workflow support to your Laravel models.",
     "keywords": [
-        ":vendor_name",
+        "square-bit",
         "laravel",
-        ":package_slug"
+        "laravel-workflow"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/square-bit/laravel-workflow",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Squarebit, Lda",
+            "email": "tech@square-bit.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.1",
+        "illuminate/contracts": "^10.0",
         "spatie/laravel-package-tools": "^1.14.0",
-        "illuminate/contracts": "^10.0"
+        "spatie/laravel-permission": "^5.10"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
@@ -30,18 +31,18 @@
         "pestphp/pest-plugin-laravel": "^2.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0",
-        "spatie/laravel-ray": "^1.26"
+        "phpstan/phpstan-phpunit": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Squarebit\\Workflows\\": "src/",
+            "Squarebit\\Workflows\\Database\\Factories\\": "database/factories/",
+            "Domains\\": "domains/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "Squarebit\\Workflows\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -61,10 +62,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Squarebit\\Workflows\\WorkflowsServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "Workflows": "Squarebit\\Workflows\\Facades\\Workflows"
             }
         }
     },

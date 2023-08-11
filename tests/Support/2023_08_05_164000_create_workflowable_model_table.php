@@ -6,14 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
-        Schema::create('migration_table_name_table', function (Blueprint $table) {
+        Schema::create('workflowable_models', function (Blueprint $table) {
             $table->id();
-
-            // add fields
-
             $table->timestamps();
+            $table->softDeletes();
         });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('workflowable_models');
     }
 };

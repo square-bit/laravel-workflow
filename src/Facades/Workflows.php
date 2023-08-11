@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Facade;
  */
 class Workflows extends Facade
 {
-//    protected static function getFacadeAccessor(): string
-//    {
-//        return \Squarebit\Workflows\Workflows::class;
-//    }
+    //    protected static function getFacadeAccessor(): string
+    //    {
+    //        return \Squarebit\Workflows\Workflows::class;
+    //    }
 }

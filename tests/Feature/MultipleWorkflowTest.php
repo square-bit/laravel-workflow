@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use Squarebit\Workflows\Database\Factories\WorkflowFactory;
 use Squarebit\Workflows\Database\Factories\WorkflowTransitionFactory;
 use Squarebit\Workflows\Tests\Support\WorkflowableModel;

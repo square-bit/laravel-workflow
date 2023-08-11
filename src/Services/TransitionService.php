@@ -21,7 +21,7 @@ class TransitionService
             ->where('workflow_id', $modelStatus->workflow_id)
             ->where('from_id', $modelStatus->workflow_status_id)
             ->get()
-            ->filter(fn(WorkflowTransition $transition) => self::isAllowed($transition, $user));
+            ->filter(fn (WorkflowTransition $transition) => self::isAllowed($transition, $user));
     }
 
     public static function isAllowed(WorkflowTransition $transition, Authenticatable $user = null): bool

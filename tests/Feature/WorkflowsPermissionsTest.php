@@ -1,12 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Squarebit\Workflows\Database\Factories\WorkflowFactory;
 use Squarebit\Workflows\Database\Factories\WorkflowTransitionFactory;
 use Squarebit\Workflows\Exceptions\UnauthorizedTransitionException;
-use Squarebit\Workflows\Models\WorkflowTransition;
 use Squarebit\Workflows\Tests\Support\WorkflowableModel;
 
 beforeEach(function () {

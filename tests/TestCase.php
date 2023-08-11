@@ -19,7 +19,7 @@ class TestCase extends Orchestra
     {
         parent::setUp();
         Factory::guessFactoryNamesUsing(
-            fn(string $modelName) => 'Squarebit\\Workflows\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'Squarebit\\Workflows\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
         $migration = include __DIR__.'/../database/migrations/create_workflow_table.php.stub';
@@ -32,7 +32,7 @@ class TestCase extends Orchestra
     {
         return [
             WorkflowsServiceProvider::class,
-            PermissionServiceProvider::class
+            PermissionServiceProvider::class,
         ];
     }
 
@@ -66,12 +66,12 @@ class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations(): void
     {
-        $from = __DIR__ . '/../vendor/spatie/laravel-permission/database/migrations/create_permission_tables.php.stub';
-        $to = __DIR__ . '/Support/2000_01_01_000000_create_permission_tables.php';
+        $from = __DIR__.'/../vendor/spatie/laravel-permission/database/migrations/create_permission_tables.php.stub';
+        $to = __DIR__.'/Support/2000_01_01_000000_create_permission_tables.php';
         File::copy($from, $to);
 
-        $this->loadMigrationsFrom(__DIR__ . '/Support');
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/Support');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadLaravelMigrations();
 
     }

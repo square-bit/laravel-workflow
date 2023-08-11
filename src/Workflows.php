@@ -4,5 +4,5 @@ namespace Squarebit\Workflows;
 
 class Workflows
 {
-   //
+    //
 }

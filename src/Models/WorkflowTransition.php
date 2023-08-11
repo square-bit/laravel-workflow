@@ -32,7 +32,7 @@ class WorkflowTransition extends Model
 
     public string $guard_name = 'web';
 
-    public function getMorphClass():string
+    public function getMorphClass(): string
     {
         return 'Workflow.WorkflowTransition';
     }

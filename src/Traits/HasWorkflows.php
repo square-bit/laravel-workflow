@@ -36,7 +36,7 @@ trait HasWorkflows
                 return;
             }
 
-            self::createModelStatus($model, $workflow, TransitionService::getWorkflowStartStatus($workflow));
+            $model->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow));
 
             $model->refresh();
         });
@@ -149,7 +149,7 @@ trait HasWorkflows
         throw_unless($this->isAllowed($transition), UnauthorizedTransitionException::class);
 
         $this->currentStatus?->delete();
-        static::createModelStatus($this, Workflow::findOrFail($this->usingWorkflow->id), $status);
+        $this->createModelStatus(Workflow::findOrFail($this->usingWorkflow->id), $status);
 
         return $this->unsetRelations();
     }
@@ -159,10 +159,10 @@ trait HasWorkflows
         return $this->availableTransitions()->count() === 0;
     }
 
-    protected static function createModelStatus(Model $model, Workflow $workflow, WorkflowStatus $status): WorkflowModelStatus
+    protected function createModelStatus(Workflow $workflow, WorkflowStatus $status): WorkflowModelStatus
     {
         $modelStatus = new WorkflowModelStatus();
-        $modelStatus->model()->associate($model);
+        $modelStatus->model()->associate($this);
         $modelStatus->user()->associate(Auth::user());
         $modelStatus->workflow()->associate($workflow);
         $modelStatus->status()->associate($status);

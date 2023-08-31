@@ -12,7 +12,6 @@ class WorkflowsServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-workflow')
             ->hasConfigFile('workflow')
-            ->hasMigration('create_laravel-workflow_table')
-            ->runsMigrations();
+            ->hasMigrations('create_workflow_tables');
     }
 }

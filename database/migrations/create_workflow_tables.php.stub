@@ -6,16 +6,15 @@ use Illuminate\Support\Facades\Schema;
 use Squarebit\Workflows\Models\Workflow;
 use Squarebit\Workflows\Models\WorkflowStatus;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function up(): void
     {
-//        $userModel= config('workflow.user_model');
-//        $allowGuestsToTransition = config('workflow.allow_guests_to_transition');
-//
-//        if (empty($userModel) || empty($allowGuestsToTransition)) {
-//            throw new \Exception('Error: config/workflow.php not loaded. Run [php artisan config:clear] and try again.');
-//        }
+        $userModel = config('workflow.user_model');
+        $allowGuestsToTransition = config('workflow.allow_guests_to_transition');
+
+        if (empty($userModel) || $allowGuestsToTransition === null) {
+            throw new \Exception('Error: config/workflow.php not loaded. Run [php artisan config:clear] and try again.');
+        }
 
         Schema::create('workflows', function (Blueprint $table) {
             $table->bigIncrements('id');

@@ -23,13 +23,14 @@ use Squarebit\Workflows\Traits\BelongsToWorkflow;
  * @method static Builder fromTo(WorkflowStatus $from, WorkflowStatus $to)
  * @method static Builder entry()
  * @method static Builder exit()
- *
  */
 class WorkflowTransition extends Model
 {
     use SoftDeletes;
+
     /** @use BelongsToWorkflow<WorkflowTransition> */
     use BelongsToWorkflow;
+
     use HasPermissions;
 
     public string $guard_name = 'web';
@@ -58,7 +59,7 @@ class WorkflowTransition extends Model
     }
 
     /**
-     * @param Builder<WorkflowTransition> $query
+     * @param  Builder<WorkflowTransition>  $query
      * @return Builder<WorkflowTransition>
      */
     public function scopeFrom(Builder $query, ?WorkflowStatus $from): Builder
@@ -67,7 +68,7 @@ class WorkflowTransition extends Model
     }
 
     /**
-     * @param Builder<WorkflowTransition> $query
+     * @param  Builder<WorkflowTransition>  $query
      * @return Builder<WorkflowTransition>
      */
     public function scopeTo(Builder $query, ?WorkflowStatus $to): Builder
@@ -76,7 +77,7 @@ class WorkflowTransition extends Model
     }
 
     /**
-     * @param Builder<WorkflowTransition> $query
+     * @param  Builder<WorkflowTransition>  $query
      * @return Builder<WorkflowTransition>
      */
     public function scopeFromTo(Builder $query, ?WorkflowStatus $from, ?WorkflowStatus $to): Builder
@@ -86,7 +87,7 @@ class WorkflowTransition extends Model
     }
 
     /**
-     * @param Builder<WorkflowTransition> $query
+     * @param  Builder<WorkflowTransition>  $query
      * @return Builder<WorkflowTransition>
      */
     public function scopeEntry(Builder $query): Builder
@@ -95,7 +96,7 @@ class WorkflowTransition extends Model
     }
 
     /**
-     * @param Builder<WorkflowTransition> $query
+     * @param  Builder<WorkflowTransition>  $query
      * @return Builder<WorkflowTransition>
      */
     public function scopeExit(Builder $query): Builder
@@ -105,6 +106,6 @@ class WorkflowTransition extends Model
 
     public function __toString()
     {
-        return $this->workflow . ': ' . ($this->fromStatus ?? 'o') . ' -> ' . ($this->toStatus ?? 'x');
+        return $this->workflow.': '.($this->fromStatus ?? 'o').' -> '.($this->toStatus ?? 'x');
     }
 }

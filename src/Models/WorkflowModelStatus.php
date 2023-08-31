@@ -20,6 +20,7 @@ use Squarebit\Workflows\Traits\BelongsToWorkflow;
 class WorkflowModelStatus extends Model
 {
     use SoftDeletes;
+
     /** @use BelongsToWorkflow<WorkflowModelStatus> */
     use BelongsToWorkflow;
 

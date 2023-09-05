@@ -44,15 +44,14 @@ test('it creates the first status for a newly created model', function () {
 
 test('it gets the status(es) of a model', function () {
     ($modelA = new WorkflowableModel())->save();
-    expect(fn () => $modelA->currentStatus)->toThrow(Exception::class)
-        ->and($modelA->currentStatuses)->toHaveCount(0);
+    expect($modelA->modelStatuses)->toHaveCount(0);
 
     ($modelB = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
     $status = $modelB->getDefaultWorkflow()->entryTransitions->first()->toStatus;
 
-    expect($modelB->currentStatus->status)->toEqual($status)
-        ->and($modelB->currentStatus->workflow)->toEqual($modelB->getDefaultWorkflow())
-        ->and($modelB->currentStatuses)->toHaveCount(1);
+    expect($modelB->modelStatus->status)->toEqual($modelB->getStatus())->toEqual($status)
+        ->and($modelB->modelStatus->workflow)->toEqual($modelB->getDefaultWorkflow())
+        ->and($modelB->modelStatuses)->toHaveCount(1);
 });
 
 test('it can transition a model', function () {
@@ -62,9 +61,9 @@ test('it can transition a model', function () {
     expect($transitions)->toHaveCount(1);
 
     $model->transition($transitions->first());
-    expect($model->currentStatus->status)->toEqual($transitions->first()->toStatus)
-        ->and($model->currentStatuses)->toHaveCount(1)
-        ->and($model->allWorkflowStatuses)->toHaveCount(2);
+    expect($model->modelStatus->status)->toEqual($transitions->first()->toStatus)
+        ->and($model->modelStatuses)->toHaveCount(1)
+        ->and($model->allModelStatus)->toHaveCount(2);
 });
 
 test('it fails transition if not valid', function () {

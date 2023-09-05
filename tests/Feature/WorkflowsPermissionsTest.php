@@ -28,7 +28,7 @@ test('it can transition if no permissions are defined', function () {
     $transition = $model->availableTransitions()->first();
 
     $model->transition($transition);
-    expect($model->currentStatus->status)->toEqual($transition->toStatus);
+    expect($model->modelStatus->status)->toEqual($transition->toStatus);
 });
 
 test('it cannot transition if user is missing necessary permissions', function () {

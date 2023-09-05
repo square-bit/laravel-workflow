@@ -2,13 +2,13 @@
 
 namespace Squarebit\Workflows\Traits;
 
+use BackedEnum;
+use Domains\Core\Helpers\ModelHelper;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Squarebit\Workflows\Contracts\Workflowable;
 use Squarebit\Workflows\Exceptions\InvalidTransitionException;
@@ -21,13 +21,13 @@ use Squarebit\Workflows\Services\TransitionService;
 use Throwable;
 
 /**
- * @property WorkflowModelStatus $currentStatus
- * @property Collection $currentStatuses
- * @property Collection $allWorkflowStatuses
+ * @property WorkflowModelStatus $modelStatus
+ * @property Collection $allModelStatus
+ * @property Collection $modelStatuses
  */
 trait HasWorkflows
 {
-    protected ?Workflow $usingWorkflow;
+    protected ?Workflow $usingWorkflow = null;
 
     public static function bootHasWorkflows(): void
     {
@@ -36,32 +36,53 @@ trait HasWorkflows
                 return;
             }
 
-            $model->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow));
-
-            $model->refresh();
+            $model->initWorkflow($workflow);
         });
+    }
+
+    public function initWorkflow(int|Workflow $workflow): static
+    {
+        $this->with = array_unique(array_merge($this->with, ['modelStatus']));
+        
+        $this->usingWorkflow($workflow);
+        if ($this->modelStatus === null) {
+            $this->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow));
+        }
+
+        return $this->usingWorkflow($workflow);
     }
 
     public function getDefaultWorkflow(): ?Workflow
     {
         $name = $this->getDefaultWorkflowName();
-        $workflow = Workflow::where('name', $name)->first();
-        $this->usingWorkflow = $workflow;
+        if ($name === null) {
+            return null;
+        }
 
-        return $workflow;
+        return Workflow::where('name', $name)->first();
+    }
+
+    /**
+     * Override this if the model should have a default workflow
+     */
+    public function getDefaultWorkflowName(): ?string
+    {
+        return null;
     }
 
     public function usingWorkflow(null|int|Workflow $workflow): static
     {
         $this->usingWorkflow = $workflow instanceof Workflow ? $workflow : Workflow::find($workflow);
-        $this->unsetRelations();
+        $this->unsetRelation('modelStatus');
+        $this->unsetRelation('modelStatuses');
+        $this->unsetRelation('allModelStatus');
 
         return $this;
     }
 
     public function getCurrentWorkflow(): ?Workflow
     {
-        return $this->usingWorkflow;
+        return $this->usingWorkflow ?? $this->getDefaultWorkflow();
     }
 
     /**
@@ -69,12 +90,10 @@ trait HasWorkflows
      *
      * @throws Throwable
      */
-    public function currentStatus(): MorphOne
+    public function modelStatus(): MorphOne
     {
-        throw_unless($this->usingWorkflow, Exception::class, 'Select a workflow before calling '.__FUNCTION__);
-
         return $this->morphOne(WorkflowModelStatus::class, 'model')
-            ->where('workflow_id', $this->usingWorkflow->id);
+            ->where('workflow_id', $this->getCurrentWorkflow()?->id);
     }
 
     /**
@@ -82,7 +101,7 @@ trait HasWorkflows
      *
      * @throws Throwable
      */
-    public function currentStatuses(): MorphMany
+    public function modelStatuses(): MorphMany
     {
         return $this->morphMany(WorkflowModelStatus::class, 'model');
     }
@@ -90,38 +109,53 @@ trait HasWorkflows
     /**
      * @throws Throwable
      */
-    public function allWorkflowStatuses(): MorphMany
+    public function allModelStatus(): MorphMany
     {
-        throw_unless($this->usingWorkflow, Exception::class, 'Select a workflow before calling '.__FUNCTION__);
-
-        return $this->currentStatuses()
+        return $this->morphMany(WorkflowModelStatus::class, 'model')
+            ->where('workflow_id', $this->getCurrentWorkflow()?->id)
             ->withTrashed();
     }
 
-    public function scopeInStatus(Builder $query, Workflow $workflow, int|array|WorkflowStatus|Collection $statusIds): Builder
+    public function getStatus(): ?WorkflowStatus
     {
-        $statuses = collect(Arr::wrap($statusIds));
-        if ($statuses->first() instanceof WorkflowStatus) {
-            $statuses = $statuses->map->id;
-        }
+        return $this->modelStatus?->status;
+    }
 
-        return $query->whereHas('currentStatuses', function (Builder $query) use ($statuses, $workflow) {
-            $query->where('workflow_id', $workflow->id)
+    public function isInStatus(string|BackedEnum $statusName): bool
+    {
+        return $this->getStatus()->name === ($statusName instanceof BackedEnum ? $statusName->value : $statusName);
+    }
+
+    public function scopeInStatus(
+        Builder $query,
+        int|array|BackedEnum|WorkflowStatus|Collection $status,
+        null|int|string|Workflow $workflow = null,
+    ): Builder {
+        $workflow = is_string($workflow)
+            ? Workflow::findWithName($workflow)
+            : ($workflow ?? $this->getDefaultWorkflow());
+
+        $statuses = $status instanceof BackedEnum
+            ? [WorkflowStatus::findWithName($status->value)?->id]
+            : ModelHelper::toIdsArray($status);
+
+        return $query->whereHas('modelStatuses', function (Builder $query) use ($statuses, $workflow) {
+            $query->where('workflow_id', is_int($workflow) ? $workflow : $workflow->id)
                 ->whereIn('workflow_status_id', $statuses);
         });
     }
 
     public function availableTransitions(): \Illuminate\Support\Collection
     {
-        throw_unless($this->usingWorkflow, Exception::class, 'Select a workflow before calling '.__FUNCTION__);
+        throw_unless($this->getCurrentWorkflow(), Exception::class, 'Select a workflow before calling '.__FUNCTION__);
 
-        return TransitionService::availableTransitions($this->currentStatus, Auth::user());
+        return TransitionService::availableTransitions($this->modelStatus, Auth::user());
     }
 
     protected function getTransitionTo(WorkflowStatus $status): ?WorkflowTransition
     {
-        return WorkflowTransition::forWorkflow($this->usingWorkflow)
-            ->fromTo($this->currentStatus?->status, $status)
+        return WorkflowTransition::forWorkflow($this->getCurrentWorkflow())
+            ->fromTo($this->modelStatus?->status, $status)
             ->first();
     }
 
@@ -148,8 +182,8 @@ trait HasWorkflows
         throw_unless($transition = $this->getTransitionTo($status), InvalidTransitionException::class);
         throw_unless($this->isAllowed($transition), UnauthorizedTransitionException::class);
 
-        $this->currentStatus?->delete();
-        $this->createModelStatus(Workflow::findOrFail($this->usingWorkflow->id), $status);
+        $this->modelStatus?->delete();
+        $this->createModelStatus(Workflow::findOrFail($this->getCurrentWorkflow()->id), $status);
 
         return $this->unsetRelations();
     }

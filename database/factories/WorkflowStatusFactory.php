@@ -15,7 +15,7 @@ class WorkflowStatusFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => fake()->firstName,
+            'name' => fake()->name,
             'description' => fake()->text,
         ];
     }

@@ -7,12 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property int $workflow_id
- * @property string $code
+ * @property string $name
  * @property string $description
  */
 class WorkflowStatus extends Model
 {
-    protected $table = 'workflow_statuses';
+    protected $table = 'workflows_statuses';
+
+    protected $guarded = ['id'];
+
+    public static function findWithName(string $name): ?WorkflowStatus
+    {
+        return self::where('name', $name)->first();
+    }
 
     public function __toString()
     {

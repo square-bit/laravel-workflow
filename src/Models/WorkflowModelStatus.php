@@ -3,11 +3,13 @@
 namespace Squarebit\Workflows\Models;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
+use Squarebit\Workflows\Contracts\Workflowable;
 use Squarebit\Workflows\Traits\BelongsToWorkflow;
 
 /**
@@ -26,10 +28,12 @@ class WorkflowModelStatus extends Model
 
     protected $with = ['status'];
 
-    protected $table = 'workflow_model_statuses';
+    protected $guarded = ['id'];
+
+    protected $table = 'workflows_model_statuses';
 
     /**
-     * @return MorphTo<Model, WorkflowModelStatus>
+     * @return MorphTo<Workflowable, WorkflowModelStatus>
      */
     public function model(): MorphTo
     {
@@ -50,5 +54,10 @@ class WorkflowModelStatus extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(WorkflowStatus::class, 'workflow_status_id');
+    }
+
+    public function scopeInStatus(Builder $query, int|WorkflowStatus $status): Builder
+    {
+        return $query->where('workflow_status_id', $status);
     }
 }

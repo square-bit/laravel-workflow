@@ -24,15 +24,15 @@ return new class extends Migration {
             $table->softDeletes();
         });
 
-        Schema::create('workflow_statuses', function (Blueprint $table) {
+        Schema::create('workflows_statuses', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code');
-            $table->string('description');
+            $table->string('name')->unique();
+            $table->string('description')->nullable();
 
             $table->timestamps();
         });
 
-        Schema::create('workflow_transitions', function (Blueprint $table) {
+        Schema::create('workflows_transitions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignIdFor(Workflow::class)->constrained();
             $table->foreignIdFor(WorkflowStatus::class, 'from_id')
@@ -49,7 +49,7 @@ return new class extends Migration {
             $table->unique(['workflow_id', 'from_id', 'to_id']);
         });
 
-        Schema::create('workflow_model_statuses', function (Blueprint $table) {
+        Schema::create('workflows_model_statuses', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->morphs('model');
             $table->foreignIdFor(config('workflow.user_model'))
@@ -65,9 +65,9 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('workflow_model_statuses');
-        Schema::dropIfExists('workflow_transitions');
-        Schema::dropIfExists('workflow_statuses');
+        Schema::dropIfExists('workflows_model_statuses');
+        Schema::dropIfExists('workflows_transitions');
+        Schema::dropIfExists('workflows_statuses');
         Schema::dropIfExists('workflows');
     }
 };

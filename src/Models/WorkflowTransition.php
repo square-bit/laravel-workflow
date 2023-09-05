@@ -35,7 +35,9 @@ class WorkflowTransition extends Model
 
     public string $guard_name = 'web';
 
-    protected $table = 'workflow_transitions';
+    protected $table = 'workflows_transitions';
+
+    protected $guarded = ['id'];
 
     public function getMorphClass(): string
     {

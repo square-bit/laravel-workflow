@@ -26,12 +26,12 @@ use Squarebit\Workflows\Traits\BelongsToWorkflow;
  */
 class WorkflowTransition extends Model
 {
-    use SoftDeletes;
-
     /** @use BelongsToWorkflow<WorkflowTransition> */
     use BelongsToWorkflow;
 
     use HasPermissions;
+
+    use SoftDeletes;
 
     public string $guard_name = 'web';
 

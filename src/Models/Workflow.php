@@ -20,7 +20,7 @@ class Workflow extends Model
 
     protected $table = 'workflows';
 
-    protected $guarded=['id'];
+    protected $guarded = ['id'];
 
     /**
      * @return HasMany<WorkflowTransition>
@@ -50,14 +50,14 @@ class Workflow extends Model
     {
         $statuses = collect();
         $this->transitions
-            ->each(fn(WorkflowTransition $transition) => $statuses
+            ->each(fn (WorkflowTransition $transition) => $statuses
                 ->add($transition->fromStatus)
                 ->add($transition->toStatus)
             );
 
         return $statuses->filter()->unique('id');
     }
-    
+
     public static function findWithName(string $name): ?Workflow
     {
         return self::where('name', $name)->first();

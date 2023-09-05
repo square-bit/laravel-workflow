@@ -30,7 +30,6 @@ class WorkflowTransition extends Model
     use BelongsToWorkflow;
 
     use HasPermissions;
-
     use SoftDeletes;
 
     public string $guard_name = 'web';

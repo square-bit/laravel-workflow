@@ -43,7 +43,7 @@ trait HasWorkflows
     public function initWorkflow(int|Workflow $workflow): static
     {
         $this->with = array_unique(array_merge($this->with, ['modelStatus']));
-        
+
         $this->usingWorkflow($workflow);
         if ($this->modelStatus === null) {
             $this->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow));
@@ -129,7 +129,7 @@ trait HasWorkflows
     public function scopeInStatus(
         Builder $query,
         int|array|BackedEnum|WorkflowStatus|Collection $status,
-        null|int|string|Workflow $workflow = null,
+        int|string|Workflow $workflow = null,
     ): Builder {
         $workflow = is_string($workflow)
             ? Workflow::findWithName($workflow)

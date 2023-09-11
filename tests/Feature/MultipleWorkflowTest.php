@@ -63,14 +63,14 @@ test('a model can have multiple workflows', function () {
     expect($modelA->usingWorkflow($this->workflowB)->getCurrentWorkflow())
         ->toEqual($this->workflowB);
 
-    expect(fn () => $modelA->transition($this->entryB))
+    expect(fn() => $modelA->transition($this->entryB))
         ->not()->toThrow(Exception::class);
     expect($modelA->modelStatus->status->id)->toBe($this->entryB->toStatus->id);
 
-    expect(WorkflowableModel::inStatus($this->workflowA, $this->entryA_to_A1->toStatus)->get())->toHaveCount(1)
-        ->and(WorkflowableModel::inStatus($this->workflowB, $this->entryA_to_A1->toStatus)->get())->toHaveCount(0);
-    expect(WorkflowableModel::inStatus($this->workflowB, $this->entryB->toStatus)->get())->toHaveCount(1)
-        ->and(WorkflowableModel::inStatus($this->workflowA, $this->entryB->toStatus)->get())->toHaveCount(0);
+    expect(WorkflowableModel::inStatus($this->entryA_to_A1->toStatus, $this->workflowA)->get())->toHaveCount(1)
+        ->and(WorkflowableModel::inStatus($this->entryA_to_A1->toStatus, $this->workflowB)->get())->toHaveCount(0);
+    expect(WorkflowableModel::inStatus($this->entryB->toStatus, $this->workflowB)->get())->toHaveCount(1)
+        ->and(WorkflowableModel::inStatus($this->entryB->toStatus, $this->workflowA)->get())->toHaveCount(0);
 
     $modelA->usingWorkflow($this->workflowA);
     expect($modelA->modelStatus->status->id)->toBe($this->entryA_to_A1->toStatus->id);

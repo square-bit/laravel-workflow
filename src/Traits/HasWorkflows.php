@@ -3,7 +3,6 @@
 namespace Squarebit\Workflows\Traits;
 
 use BackedEnum;
-use Domains\Core\Helpers\ModelHelper;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -13,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Squarebit\Workflows\Contracts\Workflowable;
 use Squarebit\Workflows\Exceptions\InvalidTransitionException;
 use Squarebit\Workflows\Exceptions\UnauthorizedTransitionException;
+use Squarebit\Workflows\Helpers\ModelHelper;
 use Squarebit\Workflows\Models\Workflow;
 use Squarebit\Workflows\Models\WorkflowModelStatus;
 use Squarebit\Workflows\Models\WorkflowStatus;
@@ -43,7 +43,7 @@ trait HasWorkflows
     public function initWorkflow(int|Workflow $workflow): static
     {
         $this->with = array_unique(array_merge($this->with, ['modelStatus']));
-        
+
         $this->usingWorkflow($workflow);
         if ($this->modelStatus === null) {
             $this->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow));
@@ -129,7 +129,7 @@ trait HasWorkflows
     public function scopeInStatus(
         Builder $query,
         int|array|BackedEnum|WorkflowStatus|Collection $status,
-        null|int|string|Workflow $workflow = null,
+        int|string|Workflow $workflow = null,
     ): Builder {
         $workflow = is_string($workflow)
             ? Workflow::findWithName($workflow)

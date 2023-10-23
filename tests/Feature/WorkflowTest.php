@@ -56,7 +56,7 @@ test('it gets the status(es) of a model', function () {
 
 test('it can transition a model', function () {
     ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
-    $transitions = $model->availableTransitions();
+    $transitions = $model->possibleTransitions();
 
     expect($transitions)->toHaveCount(1);
 
@@ -68,7 +68,7 @@ test('it can transition a model', function () {
 
 test('it fails transition if not valid', function () {
     ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
-    $transitions = $model->availableTransitions();
+    $transitions = $model->possibleTransitions();
 
     expect(fn () => $model->transitionTo($transitions->first()->fromStatus))
         ->toThrow(InvalidTransitionException::class);
@@ -96,5 +96,5 @@ test('it has toString', function () {
     ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
 
     expect($model->getCurrentWorkflow()?->__toString())->toBe($model->getCurrentWorkflow()->name);
-    expect($model->availableTransitions()->first()->__toString())->toContain($model->getCurrentWorkflow()?->__toString());
+    expect($model->possibleTransitions()->first()->__toString())->toContain($model->getCurrentWorkflow()?->__toString());
 });

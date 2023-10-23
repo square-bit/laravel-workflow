@@ -15,7 +15,7 @@ class TransitionService
     /**
      * @return Collection<int, WorkflowTransition>
      */
-    public static function availableTransitions(WorkflowModelStatus $modelStatus, Authenticatable $user = null): Collection
+    public static function possibleTransitions(WorkflowModelStatus $modelStatus, Authenticatable $user = null): Collection
     {
         return WorkflowTransition::query()
             ->where('workflow_id', $modelStatus->workflow_id)

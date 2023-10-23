@@ -135,6 +135,8 @@ trait HasWorkflows
             ? Workflow::findWithName($workflow)
             : ($workflow ?? $this->getDefaultWorkflow());
 
+        throw_unless($workflow, Exception::class, "Workflow '$workflow' not found and/or no default workflow defined.");
+
         $statuses = $status instanceof BackedEnum
             ? [WorkflowStatus::findWithName($status->value)?->id]
             : ModelHelper::toIdsArray($status);
@@ -145,11 +147,11 @@ trait HasWorkflows
         });
     }
 
-    public function availableTransitions(): \Illuminate\Support\Collection
+    public function possibleTransitions(): \Illuminate\Support\Collection
     {
         throw_unless($this->getCurrentWorkflow(), Exception::class, 'Select a workflow before calling '.__FUNCTION__);
 
-        return TransitionService::availableTransitions($this->modelStatus, Auth::user());
+        return TransitionService::possibleTransitions($this->modelStatus, Auth::user());
     }
 
     protected function getTransitionTo(WorkflowStatus $status): ?WorkflowTransition
@@ -190,7 +192,7 @@ trait HasWorkflows
 
     public function isInFinalStatus(): bool
     {
-        return $this->availableTransitions()->count() === 0;
+        return $this->possibleTransitions()->count() === 0;
     }
 
     protected function createModelStatus(Workflow $workflow, WorkflowStatus $status): WorkflowModelStatus

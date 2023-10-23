@@ -56,7 +56,8 @@ return new class extends Migration {
                 ->nullable(config('workflow.allow_guests_to_transition'))
                 ->constrained();
             $table->foreignIdFor(Workflow::class)->constrained();
-            $table->foreignIdFor(WorkflowStatus::class)->constrained();
+            $table->foreignIdFor(WorkflowStatus::class)
+                ->constrained((new WorkflowStatus())->getTable());
 
             $table->timestamps();
             $table->softDeletes();

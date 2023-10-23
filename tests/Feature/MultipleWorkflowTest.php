@@ -41,16 +41,16 @@ test('it supports multiple models', function () {
     expect($modelB->transition($this->entryB_to_B1))
         ->modelStatus->status->toEqual($this->entryB_to_B1->toStatus);
 
-    expect($modelA->availableTransitions())->toHaveCount(2);
-    expect($modelB->availableTransitions())->toHaveCount(2);
+    expect($modelA->possibleTransitions())->toHaveCount(2);
+    expect($modelB->possibleTransitions())->toHaveCount(2);
 
     expect($modelA->transition($this->A1_to_exitA))
         ->modelStatus->status->toEqual($this->A1_to_exitA->toStatus);
     expect($modelB->transition($this->B1_to_B2))
         ->modelStatus->status->toEqual($this->B1_to_B2->toStatus);
 
-    expect($modelA->availableTransitions())->toHaveCount(0);
-    expect($modelB->availableTransitions())->toHaveCount(1);
+    expect($modelA->possibleTransitions())->toHaveCount(0);
+    expect($modelB->possibleTransitions())->toHaveCount(1);
 
     expect($modelA->isInFinalStatus())->toBeTrue();
     expect($modelB->isInFinalStatus())->toBeFalse();

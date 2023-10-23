@@ -25,7 +25,7 @@ beforeEach(function () {
 test('it can transition if no permissions are defined', function () {
     ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
     /** @var \Squarebit\Workflows\Models\WorkflowTransition $transition */
-    $transition = $model->availableTransitions()->first();
+    $transition = $model->possibleTransitions()->first();
 
     $model->transition($transition);
     expect($model->modelStatus->status)->toEqual($transition->toStatus);
@@ -34,7 +34,7 @@ test('it can transition if no permissions are defined', function () {
 test('it cannot transition if user is missing necessary permissions', function () {
     ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
     /** @var \Squarebit\Workflows\Models\WorkflowTransition $transition */
-    $transition = $model->availableTransitions()->first();
+    $transition = $model->possibleTransitions()->first();
 
     $transition->givePermissionTo('PERM_A');
     expect(fn () => $model->transition($transition))
@@ -44,7 +44,7 @@ test('it cannot transition if user is missing necessary permissions', function (
 test('it can transition when user has necessary permission', function () {
     ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
     /** @var \Squarebit\Workflows\Models\WorkflowTransition $transition */
-    $transition = $model->availableTransitions()->first();
+    $transition = $model->possibleTransitions()->first();
 
     $transition->givePermissionTo('PERM_B', 'PERM_A');
     Auth::user()?->givePermissionTo('PERM_A')->givePermissionTo('PERM_B');

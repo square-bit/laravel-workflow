@@ -63,7 +63,7 @@ test('a model can have multiple workflows', function () {
     expect($modelA->usingWorkflow($this->workflowB)->getCurrentWorkflow())
         ->toEqual($this->workflowB);
 
-    expect(fn() => $modelA->transition($this->entryB))
+    expect(fn () => $modelA->transition($this->entryB))
         ->not()->toThrow(Exception::class);
     expect($modelA->modelStatus->status->id)->toBe($this->entryB->toStatus->id);
 

@@ -77,8 +77,8 @@ test('it fails transition if not valid', function () {
 test('it can filter model with specific status', function () {
     (new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
 
-    expect(WorkflowableModel::inStatus( $this->entry->toStatus, $this->workflow)->get())->toHaveCount(1)
-        ->and(WorkflowableModel::inStatus( $this->mid1->toStatus->id, $this->workflow)->get())->toHaveCount(0);
+    expect(WorkflowableModel::inStatus($this->entry->toStatus, $this->workflow)->get())->toHaveCount(1)
+        ->and(WorkflowableModel::inStatus($this->mid1->toStatus->id, $this->workflow)->get())->toHaveCount(0);
 });
 
 test('it checks if a transition is allowed', function () {

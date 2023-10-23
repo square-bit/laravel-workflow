@@ -2,7 +2,6 @@
 
 namespace Squarebit\Workflows\Helpers;
 
-use BackedEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;

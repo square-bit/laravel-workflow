@@ -31,12 +31,24 @@ trait HasWorkflows
 
     public static function bootHasWorkflows(): void
     {
-        static::created(function (Workflowable $model) {
+        static::created(static function (Workflowable $model) {
             if (($workflow = $model->getDefaultWorkflow()) === null) {
                 return;
             }
 
             $model->initWorkflow($workflow);
+        });
+
+        static::deleted(function (Workflowable $model) {
+            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
+                return;
+            }
+
+            WorkflowModelStatus::query()
+                ->withTrashed()
+                ->where('model_type', $model->getMorphClass())
+                ->where('model_id', $model->getKey())
+                ->forceDelete();
         });
     }
 
@@ -126,11 +138,28 @@ trait HasWorkflows
         return $this->getStatus()->name === ($statusName instanceof BackedEnum ? $statusName->value : $statusName);
     }
 
+    public function scopeInWorkflow(
+        Builder             $query,
+        int|string|Workflow $workflow,
+    ): Builder
+    {
+        $workflow = is_string($workflow)
+            ? Workflow::findWithName($workflow)
+            : ($workflow ?? $this->getDefaultWorkflow());
+
+        throw_unless($workflow, Exception::class, "Workflow '$workflow' not found and/or no default workflow defined.");
+
+        return $query->whereHas('modelStatuses', function (Builder $query) use ($workflow) {
+            $query->where('workflow_id', is_int($workflow) ? $workflow : $workflow->id);
+        });
+    }
+
     public function scopeInStatus(
-        Builder $query,
+        Builder                                        $query,
         int|array|BackedEnum|WorkflowStatus|Collection $status,
-        int|string|Workflow $workflow = null,
-    ): Builder {
+        int|string|Workflow                            $workflow = null,
+    ): Builder
+    {
         $workflow = is_string($workflow)
             ? Workflow::findWithName($workflow)
             : ($workflow ?? $this->getDefaultWorkflow());
@@ -149,7 +178,7 @@ trait HasWorkflows
 
     public function possibleTransitions(): \Illuminate\Support\Collection
     {
-        throw_unless($this->getCurrentWorkflow(), Exception::class, 'Select a workflow before calling '.__FUNCTION__);
+        throw_unless($this->getCurrentWorkflow(), Exception::class, 'Select a workflow before calling ' . __FUNCTION__);
 
         return TransitionService::possibleTransitions($this->modelStatus, Auth::user());
     }

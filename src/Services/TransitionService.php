@@ -15,7 +15,7 @@ class TransitionService
     /**
      * @return Collection<int, WorkflowTransition>
      */
-    public static function possibleTransitions(WorkflowModelStatus $modelStatus, Authenticatable $user = null): Collection
+    public static function possibleTransitions(WorkflowModelStatus $modelStatus, ?Authenticatable $user = null): Collection
     {
         return WorkflowTransition::query()
             ->where('workflow_id', $modelStatus->workflow_id)
@@ -24,7 +24,7 @@ class TransitionService
             ->filter(fn (WorkflowTransition $transition) => self::isAllowed($transition, $user));
     }
 
-    public static function isAllowed(WorkflowTransition $transition, Authenticatable $user = null): bool
+    public static function isAllowed(WorkflowTransition $transition, ?Authenticatable $user = null): bool
     {
         $user = $user ?? Auth::user();
 

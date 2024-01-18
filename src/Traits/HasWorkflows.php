@@ -139,10 +139,9 @@ trait HasWorkflows
     }
 
     public function scopeInWorkflow(
-        Builder             $query,
+        Builder $query,
         int|string|Workflow $workflow,
-    ): Builder
-    {
+    ): Builder {
         $workflow = is_string($workflow)
             ? Workflow::findWithName($workflow)
             : ($workflow ?? $this->getDefaultWorkflow());
@@ -155,11 +154,10 @@ trait HasWorkflows
     }
 
     public function scopeInStatus(
-        Builder                                        $query,
+        Builder $query,
         int|array|BackedEnum|WorkflowStatus|Collection $status,
-        int|string|Workflow                            $workflow = null,
-    ): Builder
-    {
+        int|string|Workflow|null $workflow = null,
+    ): Builder {
         $workflow = is_string($workflow)
             ? Workflow::findWithName($workflow)
             : ($workflow ?? $this->getDefaultWorkflow());
@@ -178,7 +176,7 @@ trait HasWorkflows
 
     public function possibleTransitions(): \Illuminate\Support\Collection
     {
-        throw_unless($this->getCurrentWorkflow(), Exception::class, 'Select a workflow before calling ' . __FUNCTION__);
+        throw_unless($this->getCurrentWorkflow(), Exception::class, 'Select a workflow before calling '.__FUNCTION__);
 
         return TransitionService::possibleTransitions($this->modelStatus, Auth::user());
     }

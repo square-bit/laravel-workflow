@@ -30,8 +30,8 @@ beforeEach(function () {
 });
 
 test('it supports multiple models', function () {
-    ($modelA = new WorkflowableModel())->setDefaultWorkflowName($this->workflowA->name)->save();
-    ($modelB = new WorkflowableModel())->setDefaultWorkflowName($this->workflowB->name)->save();
+    ($modelA = new WorkflowableModel)->setDefaultWorkflowName($this->workflowA->name)->save();
+    ($modelB = new WorkflowableModel)->setDefaultWorkflowName($this->workflowB->name)->save();
 
     expect($modelA->modelStatus->workflow)->id->toBe($this->workflowA->id);
     expect($modelB->modelStatus->workflow)->id->toEqual($this->workflowB->id);
@@ -57,7 +57,7 @@ test('it supports multiple models', function () {
 });
 
 test('a model can have multiple workflows', function () {
-    ($modelA = new WorkflowableModel())->setDefaultWorkflowName($this->workflowA->name)->save();
+    ($modelA = new WorkflowableModel)->setDefaultWorkflowName($this->workflowA->name)->save();
     $modelA->transition($this->entryA_to_A1);
 
     expect($modelA->usingWorkflow($this->workflowB)->getCurrentWorkflow())

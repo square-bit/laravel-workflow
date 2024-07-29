@@ -226,7 +226,7 @@ trait HasWorkflows
     protected function createModelStatus(Workflow $workflow, WorkflowStatus $status): WorkflowModelStatus
     {
         $wmsClass = config('workflow.workflow_model_status_class');
-        $modelStatus = new $wmsClass();
+        $modelStatus = new $wmsClass;
         $modelStatus->model()->associate($this);
         $modelStatus->user()->associate(Auth::user());
         $modelStatus->workflow()->associate($workflow);

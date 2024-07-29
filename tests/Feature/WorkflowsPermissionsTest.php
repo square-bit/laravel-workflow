@@ -23,7 +23,7 @@ beforeEach(function () {
 });
 
 test('it can transition if no permissions are defined', function () {
-    ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
+    ($model = new WorkflowableModel)->setDefaultWorkflowName($this->workflow->name)->save();
     /** @var \Squarebit\Workflows\Models\WorkflowTransition $transition */
     $transition = $model->possibleTransitions()->first();
 
@@ -32,7 +32,7 @@ test('it can transition if no permissions are defined', function () {
 });
 
 test('it cannot transition if user is missing necessary permissions', function () {
-    ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
+    ($model = new WorkflowableModel)->setDefaultWorkflowName($this->workflow->name)->save();
     /** @var \Squarebit\Workflows\Models\WorkflowTransition $transition */
     $transition = $model->possibleTransitions()->first();
 
@@ -42,7 +42,7 @@ test('it cannot transition if user is missing necessary permissions', function (
 });
 
 test('it can transition when user has necessary permission', function () {
-    ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
+    ($model = new WorkflowableModel)->setDefaultWorkflowName($this->workflow->name)->save();
     /** @var \Squarebit\Workflows\Models\WorkflowTransition $transition */
     $transition = $model->possibleTransitions()->first();
 

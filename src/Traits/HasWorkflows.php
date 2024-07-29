@@ -44,7 +44,8 @@ trait HasWorkflows
                 return;
             }
 
-            WorkflowModelStatus::query()
+            $wmsClass = config('workflow.workflow_model_status_class');
+            $wmsClass::query()
                 ->withTrashed()
                 ->where('model_type', $model->getMorphClass())
                 ->where('model_id', $model->getKey())
@@ -104,7 +105,7 @@ trait HasWorkflows
      */
     public function modelStatus(): MorphOne
     {
-        return $this->morphOne(WorkflowModelStatus::class, 'model')
+        return $this->morphOne(config('workflow.workflow_model_status_class'), 'model')
             ->where('workflow_id', $this->getCurrentWorkflow()?->id);
     }
 
@@ -115,7 +116,7 @@ trait HasWorkflows
      */
     public function modelStatuses(): MorphMany
     {
-        return $this->morphMany(WorkflowModelStatus::class, 'model');
+        return $this->morphMany(config('workflow.workflow_model_status_class'), 'model');
     }
 
     /**
@@ -123,7 +124,7 @@ trait HasWorkflows
      */
     public function allModelStatus(): MorphMany
     {
-        return $this->morphMany(WorkflowModelStatus::class, 'model')
+        return $this->morphMany(config('workflow.workflow_model_status_class'), 'model')
             ->where('workflow_id', $this->getCurrentWorkflow()?->id)
             ->withTrashed();
     }
@@ -224,7 +225,8 @@ trait HasWorkflows
 
     protected function createModelStatus(Workflow $workflow, WorkflowStatus $status): WorkflowModelStatus
     {
-        $modelStatus = new WorkflowModelStatus();
+        $wmsClass = config('workflow.workflow_model_status_class');
+        $modelStatus = new $wmsClass();
         $modelStatus->model()->associate($this);
         $modelStatus->user()->associate(Auth::user());
         $modelStatus->workflow()->associate($workflow);

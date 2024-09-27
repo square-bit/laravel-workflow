@@ -17,6 +17,10 @@ beforeEach(function () {
     // 2 exits
     WorkflowTransitionFactory::new()->workflow($workflow->id)->from($mid1->to_id)->exit()->create();
     WorkflowTransitionFactory::new()->workflow($workflow->id)->from($mid2->to_id)->exit()->create();
+
+
+    $this->secondaryWorkflow = $workflow = WorkflowFactory::new()->create();
+    WorkflowTransitionFactory::new()->workflow($this->secondaryWorkflow->id)->entry()->create();
 });
 
 test('it has correct relationships', function () {
@@ -50,7 +54,7 @@ test('it gets the status(es) of a model', function () {
     $status = $modelB->getDefaultWorkflow()->entryTransitions->first()->toStatus;
 
     expect($modelB->modelStatus->status)->toEqual($modelB->getStatus())->toEqual($status)
-        ->and($modelB->modelStatus->workflow)->toEqual($modelB->getDefaultWorkflow())
+        ->and($modelB->modelStatus->workflow->id)->toEqual($modelB->getDefaultWorkflow()?->id)
         ->and($modelB->modelStatuses)->toHaveCount(1);
 });
 
@@ -90,6 +94,21 @@ test('it checks if a transition is allowed', function () {
     Auth::logout();
 
     expect($model->isAllowed($this->mid1))->toBeFalse();
+});
+
+test('it deletes model statuses when model is deleted', function () {
+    ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
+    expect(WorkflowModelStatus::count())->toBe(1);
+
+    $model->delete();
+    expect(WorkflowModelStatus::count())->toBe(0);
+});
+
+test('it queries by workflow', function () {
+    ($model = new WorkflowableModel())->setDefaultWorkflowName($this->workflow->name)->save();
+
+    expect(WorkflowableModel::query()->inWorkflow($this->workflow->name)->count())->toBe(1)
+    ->and(WorkflowableModel::query()->inWorkflow($this->secondaryWorkflow->name)->count())->toBe(0);
 });
 
 test('it has toString', function () {

@@ -16,11 +16,11 @@ class WorkflowTransitionFactory extends Factory
     {
         return [
             /** @phpstan-ignore-next-line */
-            'workflow_id' => WorkflowFactory::new()->create()->id,
+            'workflow_id' => fn() => WorkflowFactory::new()->create()->id,
             /** @phpstan-ignore-next-line */
-            'from_id' => WorkflowStatusFactory::new()->create()->id,
+            'from_id' => fn() => WorkflowStatusFactory::new()->create()->id,
             /** @phpstan-ignore-next-line */
-            'to_id' => WorkflowStatusFactory::new()->create()->id,
+            'to_id' => fn() => WorkflowStatusFactory::new()->create()->id,
             'order' => random_int(1, 999),
         ];
     }

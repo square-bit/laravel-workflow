@@ -18,7 +18,9 @@ class WorkflowStatus extends Model
 
     public static function findWithName(string $name): ?WorkflowStatus
     {
-        return self::where('name', $name)->first();
+        static $status = [];
+
+        return $status[$name] ?? ($status[$name] = self::where('name', $name)->first());
     }
 
     public function __toString()

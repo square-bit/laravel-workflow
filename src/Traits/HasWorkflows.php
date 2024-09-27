@@ -57,7 +57,9 @@ trait HasWorkflows
     {
         $this->with = array_unique(array_merge($this->with, ['modelStatus']));
 
-        $this->usingWorkflow($workflow);
+        $this->usingWorkflow($workflow)
+            ->loadMissing('modelStatus');
+
         if ($this->modelStatus === null) {
             $this->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow));
         }
@@ -67,12 +69,14 @@ trait HasWorkflows
 
     public function getDefaultWorkflow(): ?Workflow
     {
+        static $workflows = [];
+
         $name = $this->getDefaultWorkflowName();
         if ($name === null) {
             return null;
         }
 
-        return Workflow::where('name', $name)->first();
+        return $workflows[$name] ?? ($workflows[$name] = Workflow::where('name', $name)->first());
     }
 
     /**
@@ -86,6 +90,7 @@ trait HasWorkflows
     public function usingWorkflow(null|int|Workflow $workflow): static
     {
         $this->usingWorkflow = $workflow instanceof Workflow ? $workflow : Workflow::find($workflow);
+
         $this->unsetRelation('modelStatus');
         $this->unsetRelation('modelStatuses');
         $this->unsetRelation('allModelStatus');

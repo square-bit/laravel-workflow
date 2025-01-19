@@ -60,4 +60,9 @@ class WorkflowModelStatus extends Model
     {
         return $query->where('workflow_status_id', $status);
     }
+
+    public function scopeForWorkflow(Builder $query, int|Workflow $workflow): Builder
+    {
+        return $query->where('workflow_id', $workflow);
+    }
 }

@@ -55,12 +55,12 @@ trait HasWorkflows
 
     public function initWorkflow(int|Workflow $workflow): static
     {
-        $this->with = array_unique(array_merge($this->with, ['modelStatus']));
+        $isInitialized = WorkflowModelStatus::query()
+            ->where('workflow_id', is_int($workflow) ? $workflow : $workflow->getKey())
+            ->where('model', $this)
+            ->count();
 
-        $this->usingWorkflow($workflow)
-            ->loadMissing('modelStatus');
-
-        if ($this->modelStatus === null) {
+        if (! $isInitialized) {
             $this->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow));
         }
 

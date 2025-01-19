@@ -55,8 +55,8 @@ class TestCase extends Orchestra
             'role_has_permissions' => 'role_has_permissions',
         ]);
         config()->set('permission.column_names', [
-            'role_pivot_key' => null, //default 'role_id',
-            'permission_pivot_key' => null, //default 'permission_id',
+            'role_pivot_key' => null, // default 'role_id',
+            'permission_pivot_key' => null, // default 'permission_id',
             'model_morph_key' => 'model_id',
             'team_foreign_key' => 'team_id',
         ]);

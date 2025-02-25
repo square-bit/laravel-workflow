@@ -57,7 +57,7 @@ trait HasWorkflows
     {
         $isInitialized = WorkflowModelStatus::query()
             ->where('workflow_id', is_int($workflow) ? $workflow : $workflow->getKey())
-            ->where('model', $this)
+            ->whereMorphedTo('model', $this)
             ->count();
 
         if (! $isInitialized) {

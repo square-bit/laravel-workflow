@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasPermissions;
+use Spatie\Permission\Traits\HasRoles;
 use Squarebit\Workflows\Traits\BelongsToWorkflow;
 
 /**
@@ -29,7 +30,7 @@ class WorkflowTransition extends Model
     /** @use BelongsToWorkflow<WorkflowTransition> */
     use BelongsToWorkflow;
 
-    use HasPermissions;
+    use HasRoles;
     use SoftDeletes;
 
     public string $guard_name = 'web';

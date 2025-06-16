@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Squarebit\Workflows\Contracts\Workflowable;
 use Squarebit\Workflows\Traits\BelongsToWorkflow;
-use function Pest\Laravel\instance;
 
 /**
  * @property Model $model

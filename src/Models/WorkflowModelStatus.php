@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Squarebit\Workflows\Contracts\Workflowable;
 use Squarebit\Workflows\Traits\BelongsToWorkflow;
+use function Pest\Laravel\instance;
 
 /**
  * @property Model $model
@@ -58,11 +59,11 @@ class WorkflowModelStatus extends Model
 
     public function scopeInStatus(Builder $query, int|WorkflowStatus $status): Builder
     {
-        return $query->where('workflow_status_id', $status);
+        return $query->where('workflow_status_id', $status instanceof WorkflowStatus ? $status->getKey() : $status);
     }
 
     public function scopeForWorkflow(Builder $query, int|Workflow $workflow): Builder
     {
-        return $query->where('workflow_id', $workflow);
+        return $query->where('workflow_id', $workflow instanceof Workflow ? $workflow->getKey() : $workflow);
     }
 }

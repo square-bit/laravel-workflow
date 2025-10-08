@@ -4,7 +4,6 @@ namespace Squarebit\Workflows\Contracts;
 
 use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Collection as SupportCollection;
@@ -61,7 +60,7 @@ interface Workflowable
         int|string|Workflow|null $workflow = null,
     ): Builder;
 
-    public function possibleTransitions(): \Illuminate\Support\Collection:
+    public function possibleTransitions(): SupportCollection;
 
     public function isAllowed(WorkflowStatus|WorkflowTransition $status): bool;
 

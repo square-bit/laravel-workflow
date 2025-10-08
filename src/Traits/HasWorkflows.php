@@ -27,7 +27,7 @@ use Throwable;
  */
 trait HasWorkflows
 {
-    protected ?Workflow $usingWorkflow = null;
+    protected static ?Workflow $usingWorkflow = null;
 
     public static function bootHasWorkflows(): void
     {
@@ -89,7 +89,7 @@ trait HasWorkflows
 
     public function usingWorkflow(null|int|Workflow $workflow): static
     {
-        $this->usingWorkflow = $workflow instanceof Workflow ? $workflow : Workflow::find($workflow);
+        self::$usingWorkflow = $workflow instanceof Workflow ? $workflow : Workflow::find($workflow);
 
         $this->unsetRelation('modelStatus');
         $this->unsetRelation('modelStatuses');
@@ -100,7 +100,7 @@ trait HasWorkflows
 
     public function getCurrentWorkflow(): ?Workflow
     {
-        return $this->usingWorkflow ?? $this->getDefaultWorkflow();
+        return self::$usingWorkflow ?? $this->getDefaultWorkflow();
     }
 
     /**

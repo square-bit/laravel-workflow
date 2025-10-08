@@ -33,26 +33,24 @@ test('it supports multiple models', function () {
     ($modelA = new WorkflowableModel)->setDefaultWorkflowName($this->workflowA->name)->save();
     ($modelB = new WorkflowableModel)->setDefaultWorkflowName($this->workflowB->name)->save();
 
+    $modelA->usingWorkflow($modelA->getDefaultWorkflow());
     expect($modelA->modelStatus->workflow)->id->toBe($this->workflowA->id);
-    expect($modelB->modelStatus->workflow)->id->toEqual($this->workflowB->id);
-
     expect($modelA->transition($this->entryA_to_A1))
         ->modelStatus->status->toEqual($this->entryA_to_A1->toStatus);
-    expect($modelB->transition($this->entryB_to_B1))
-        ->modelStatus->status->toEqual($this->entryB_to_B1->toStatus);
-
     expect($modelA->possibleTransitions())->toHaveCount(2);
-    expect($modelB->possibleTransitions())->toHaveCount(2);
-
     expect($modelA->transition($this->A1_to_exitA))
         ->modelStatus->status->toEqual($this->A1_to_exitA->toStatus);
+    expect($modelA->possibleTransitions())->toHaveCount(0);
+    expect($modelA->isInFinalStatus())->toBeTrue();
+
+    $modelB->usingWorkflow($modelB->getDefaultWorkflow());
+    expect($modelB->modelStatus->workflow)->id->toEqual($this->workflowB->id);
+    expect($modelB->transition($this->entryB_to_B1))
+        ->modelStatus->status->toEqual($this->entryB_to_B1->toStatus);
+    expect($modelB->possibleTransitions())->toHaveCount(2);
     expect($modelB->transition($this->B1_to_B2))
         ->modelStatus->status->toEqual($this->B1_to_B2->toStatus);
-
-    expect($modelA->possibleTransitions())->toHaveCount(0);
     expect($modelB->possibleTransitions())->toHaveCount(1);
-
-    expect($modelA->isInFinalStatus())->toBeTrue();
     expect($modelB->isInFinalStatus())->toBeFalse();
 });
 

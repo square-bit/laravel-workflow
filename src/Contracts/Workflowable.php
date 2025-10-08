@@ -4,6 +4,7 @@ namespace Squarebit\Workflows\Contracts;
 
 use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Collection as SupportCollection;
@@ -56,7 +57,7 @@ interface Workflowable
 
     public function scopeInStatus(
         Builder $query,
-        int|array|BackedEnum|WorkflowStatus|SupportCollection $status,
+        int|array|BackedEnum|WorkflowStatus|Collection $status,
         int|string|Workflow|null $workflow = null,
     ): Builder;
 

@@ -30,6 +30,6 @@ class WorkflowStatus extends Model
 
     public function getLabel(): string
     {
-       return str(__($this->name))->title();
+        return str(__($this->name))->title();
     }
 }

@@ -3,6 +3,7 @@
 namespace Squarebit\Workflows\Traits;
 
 use BackedEnum;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -18,7 +19,6 @@ use Squarebit\Workflows\Models\WorkflowModelStatus;
 use Squarebit\Workflows\Models\WorkflowStatus;
 use Squarebit\Workflows\Models\WorkflowTransition;
 use Squarebit\Workflows\Services\TransitionService;
-use Carbon\Carbon;
 use Throwable;
 
 /**
@@ -210,8 +210,8 @@ trait HasWorkflows
     }
 
     /**
-     * @throws \Squarebit\Workflows\Exceptions\InvalidTransitionException
-     * @throws \Squarebit\Workflows\Exceptions\UnauthorizedTransitionException
+     * @throws InvalidTransitionException
+     * @throws UnauthorizedTransitionException
      */
     public function transitionTo(WorkflowStatus $status, ?Carbon $when = null): static
     {

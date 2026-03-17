@@ -11,7 +11,7 @@ use Squarebit\Workflows\Models\Workflow;
  * @template T of Model
  *
  * @property int $workflow_id
- * @property \Squarebit\Workflows\Models\Workflow $workflow
+ * @property Workflow $workflow
  *
  * @method static Builder forWorkflow(int|Workflow $workflow)
  */

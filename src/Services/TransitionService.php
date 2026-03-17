@@ -44,7 +44,7 @@ class TransitionService
 
     public static function getWorkflowStartStatus(Workflow $workflow): WorkflowStatus
     {
-        /** @var \Squarebit\Workflows\Models\WorkflowTransition $transition */
+        /** @var WorkflowTransition $transition */
         $transition = WorkflowTransition::forWorkflow($workflow)
             ->whereNull('from_id')
             ->first();

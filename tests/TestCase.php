@@ -45,7 +45,7 @@ class TestCase extends Orchestra
             'prefix' => '',
         ]);
 
-        config()->set('workflow.user_model', \Squarebit\Workflows\Tests\Support\User::class);
+        config()->set('workflow.user_model', User::class);
         config()->set('workflow.allow_guests_to_transition', false);
         config()->set('permission.table_names', [
             'roles' => 'roles',

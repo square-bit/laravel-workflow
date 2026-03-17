@@ -18,6 +18,7 @@ use Squarebit\Workflows\Models\WorkflowModelStatus;
 use Squarebit\Workflows\Models\WorkflowStatus;
 use Squarebit\Workflows\Models\WorkflowTransition;
 use Squarebit\Workflows\Services\TransitionService;
+use Carbon\Carbon;
 use Throwable;
 
 /**
@@ -212,13 +213,14 @@ trait HasWorkflows
      * @throws \Squarebit\Workflows\Exceptions\InvalidTransitionException
      * @throws \Squarebit\Workflows\Exceptions\UnauthorizedTransitionException
      */
-    public function transitionTo(WorkflowStatus $status): static
+    public function transitionTo(WorkflowStatus $status, ?Carbon $when = null): static
     {
         throw_unless($transition = $this->getTransitionTo($status), InvalidTransitionException::class);
         throw_unless($this->isAllowed($transition), UnauthorizedTransitionException::class);
 
-        $this->modelStatus?->delete();
-        $this->createModelStatus(Workflow::findOrFail($this->getCurrentWorkflow()->id), $status);
+        $when ??= Carbon::now();
+        $this->modelStatus?->update(['deleted_at' => $when]);
+        $this->createModelStatus(Workflow::findOrFail($this->getCurrentWorkflow()->id), $status, $when);
 
         return $this->unsetRelations();
     }
@@ -228,7 +230,7 @@ trait HasWorkflows
         return $this->possibleTransitions()->count() === 0;
     }
 
-    protected function createModelStatus(Workflow $workflow, WorkflowStatus $status): WorkflowModelStatus
+    protected function createModelStatus(Workflow $workflow, WorkflowStatus $status, ?Carbon $when = null): WorkflowModelStatus
     {
         $wmsClass = config('workflow.workflow_model_status_class');
         $modelStatus = new $wmsClass;
@@ -236,6 +238,7 @@ trait HasWorkflows
         $modelStatus->user()->associate(Auth::user());
         $modelStatus->workflow()->associate($workflow);
         $modelStatus->status()->associate($status);
+        $modelStatus->created_at = $when;
         $modelStatus->save();
 
         return $modelStatus;

@@ -116,3 +116,21 @@ test('it has toString', function () {
     expect($model->getCurrentWorkflow()?->__toString())->toBe($model->getCurrentWorkflow()->name);
     expect($model->possibleTransitions()->first()->__toString())->toContain($model->getCurrentWorkflow()?->__toString());
 });
+
+test('it transitions with the given date on both old and new records', function () {
+    ($model = new WorkflowableModel)->setDefaultWorkflowName($this->workflow->name)->save();
+    $transitions = $model->possibleTransitions();
+    $when = Carbon\Carbon::create(2025, 6, 15, 10, 30, 0);
+
+    $model->transitionTo($transitions->first()->toStatus, $when);
+
+    $records = WorkflowModelStatus::withTrashed()
+        ->where('model_type', $model->getMorphClass())
+        ->where('model_id', $model->getKey())
+        ->orderBy('id')
+        ->get();
+
+    expect($records)->toHaveCount(2)
+        ->and($records[0]->deleted_at->toDateTimeString())->toBe($when->toDateTimeString())
+        ->and($records[1]->created_at->toDateTimeString())->toBe($when->toDateTimeString());
+});

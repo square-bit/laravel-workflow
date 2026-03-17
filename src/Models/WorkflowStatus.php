@@ -25,6 +25,11 @@ class WorkflowStatus extends Model
 
     public function __toString()
     {
-        return '('.$this->id.')'.$this->code;
+        return '('.$this->id.')'.$this->name;
+    }
+
+    public function getLabel(): string
+    {
+       return str(__($this->name))->title();
     }
 }

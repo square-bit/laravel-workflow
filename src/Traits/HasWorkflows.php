@@ -224,7 +224,9 @@ trait HasWorkflows
         $this->modelStatus?->update(['deleted_at' => $when]);
         $this->createModelStatus(Workflow::findOrFail($this->getCurrentWorkflow()->id), $status, $when);
 
-        return $this->unsetRelations();
+        return $this->unsetRelation('modelStatus')
+            ->unsetRelation('allModelStatus')
+            ->unsetRelation('modelStatuses');
     }
 
     public function isInFinalStatus(): bool

@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-workflow` will be documented in this file.
 
+## v12.2.1 - 2026-03-18
+
+**Full Changelog**: https://github.com/square-bit/laravel-workflow/compare/v12.2...v12.2.1
+
 ## v12.2 - 2026-03-17
 
 ### What's Changed

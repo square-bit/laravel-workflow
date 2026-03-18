@@ -62,7 +62,7 @@ trait HasWorkflows
             ->count();
 
         if (! $isInitialized) {
-            $this->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow));
+            $this->createModelStatus($workflow, TransitionService::getWorkflowStartStatus($workflow), now());
         }
 
         return $this->usingWorkflow($workflow);
@@ -211,7 +211,7 @@ trait HasWorkflows
 
     /**
      * @throws \Squarebit\Workflows\Exceptions\InvalidTransitionException
-     * @throws \Squarebit\Workflows\Exceptions\UnauthorizedTransitionException
+     * @throws \Squarebit\Workflows\Exceptions\UnauthorizedTransitionException|Throwable
      */
     public function transitionTo(WorkflowStatus $status, ?Carbon $when = null): static
     {
@@ -230,7 +230,7 @@ trait HasWorkflows
         return $this->possibleTransitions()->count() === 0;
     }
 
-    protected function createModelStatus(Workflow $workflow, WorkflowStatus $status, ?Carbon $when = null): WorkflowModelStatus
+    protected function createModelStatus(Workflow $workflow, WorkflowStatus $status, Carbon $when): WorkflowModelStatus
     {
         $wmsClass = config('workflow.workflow_model_status_class');
         $modelStatus = new $wmsClass;

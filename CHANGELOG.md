@@ -2,6 +2,14 @@
 
 All notable changes to `laravel-workflow` will be documented in this file.
 
+## v12.2 - 2026-03-17
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/square-bit/laravel-workflow/pull/17
+
+**Full Changelog**: https://github.com/square-bit/laravel-workflow/compare/v12.1.1...v12.2
+
 ## Expand Workflowable contract - 2025-10-08
 
 ### What's Changed

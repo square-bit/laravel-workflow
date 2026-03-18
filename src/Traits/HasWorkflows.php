@@ -210,8 +210,8 @@ trait HasWorkflows
     }
 
     /**
-     * @throws \Squarebit\Workflows\Exceptions\InvalidTransitionException
-     * @throws \Squarebit\Workflows\Exceptions\UnauthorizedTransitionException|Throwable
+     * @throws InvalidTransitionException
+     * @throws UnauthorizedTransitionException|Throwable
      * @throws InvalidTransitionException
      * @throws UnauthorizedTransitionException
      */
